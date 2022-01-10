@@ -1,14 +1,19 @@
 const express = require('express')
 
 const { validation, authenticate, upload } = require('../../middlewares')
-const { joiUserSchema } = require('../../models')
+const { joiUserSchema, joiUserEmailSchema } = require('../../models')
 const { auth: ctrlAuth, contacts: ctrlContacts, user: ctrlUser } = require('../../controllers')
 
 const validationUserMiddleware = validation(joiUserSchema)
+const validationUserEmailMiddleware = validation(joiUserEmailSchema)
 
 const router = express.Router()
 
 router.post('/users/signup', validationUserMiddleware, ctrlAuth.signup)
+
+router.get('/users/verify/:verificationToken', ctrlAuth.verify)
+
+router.post('/users/verify', validationUserEmailMiddleware, ctrlAuth.resendEmail)
 
 router.post('/users/signin', validationUserMiddleware, ctrlAuth.signin)
 
