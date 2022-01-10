@@ -1,0 +1,23 @@
+const express = require('express')
+
+const { validation, authenticate } = require('../../middlewares')
+const { joiUserSchema } = require('../../models')
+const { auth: ctrlAuth, contacts: ctrlContacts, user: ctrlUser } = require('../../controllers')
+
+const validationUserMiddleware = validation(joiUserSchema)
+
+const router = express.Router()
+
+router.post('/users/signup', validationUserMiddleware, ctrlAuth.signup)
+
+router.post('/users/login', validationUserMiddleware, ctrlAuth.signin)
+
+router.get('/users/signout', authenticate, ctrlAuth.signout)
+
+router.get('/users/current', authenticate, ctrlContacts.listContacts)
+
+router.patch('/users', authenticate, ctrlUser.updateSubscr)
+
+router.get('/users/favorite', authenticate, ctrlContacts.getFavorite)
+
+module.exports = router
